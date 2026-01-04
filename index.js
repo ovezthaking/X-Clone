@@ -2,9 +2,6 @@ import { tweetsData } from "./data.js";
 import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
 
-const tweetInput = document.getElementById('tweet-input')
-
-
 document.addEventListener('click', (e) => {
     if(e.target.dataset.like) handleLikeClick(e.target.dataset.like)
     if(e.target.dataset.retweet) handleRetweetClick(e.target.dataset.retweet)
@@ -19,7 +16,7 @@ function handleLikeClick(tweetId){
     else targetTweetObj.likes ++
     
     targetTweetObj.isLiked = !targetTweetObj.isLiked
-    render()
+    render(false)
 }
 
 function handleRetweetClick(tweetId){
@@ -28,7 +25,7 @@ function handleRetweetClick(tweetId){
     else targetTweetObj.retweets ++
 
     targetTweetObj.isRetweeted = !targetTweetObj.isRetweeted
-    render()
+    render(false)
 }
 
 function handleReplyClick(replyId){
@@ -37,23 +34,28 @@ function handleReplyClick(replyId){
 }
 
 function handleTweetBtnClick(){
-    const newTweetObj = {
-        tweetText: tweetInput.value,
-        uuid: uuidv4(),
-        handle: '@Scrimba',
-        profilePic: `images/scrimbalogo.png`,
-        likes: 0,
-        retweets: 0,
-        replies: [],
-        isLiked: false,
-        isRetweeted: false,
-    }
+    const tweetInput = document.getElementById('tweet-input')
 
-    tweetsData.unshift(newTweetObj)
-    render(true)
+    if (tweetInput.value){
+        const newTweetObj = {
+            tweetText: tweetInput.value,
+            uuid: uuidv4(),
+            handle: '@Scrimba',
+            profilePic: `images/scrimbalogo.png`,
+            likes: 0,
+            retweets: 0,
+            replies: [],
+            isLiked: false,
+            isRetweeted: false,
+        }
+
+        tweetsData.unshift(newTweetObj)
+        tweetInput.value = ''
+        render(true)
+    }
 }
 
-function getFeedHtml(firstRender = false){
+function getFeedHtml(){
     let feedHtml = ``
 
     tweetsData.forEach(tweet => {
@@ -119,7 +121,7 @@ function getFeedHtml(firstRender = false){
                     </div>            
                 </div>
                 <div 
-                    class="${firstRender == true ? 'hidden' : ''}"
+                    class="hidden"
                     id="replies-${tweet.uuid}"
                 >
                     ${repliesHtml}
@@ -131,8 +133,8 @@ function getFeedHtml(firstRender = false){
     return feedHtml
 }
 
-function render(firstRender = false){
-    document.getElementById('feed').innerHTML = getFeedHtml(firstRender)
+function render(){
+    document.getElementById('feed').innerHTML = getFeedHtml()
 }
 
-render(true)
+render()
