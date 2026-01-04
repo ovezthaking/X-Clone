@@ -1,4 +1,5 @@
 import { tweetsData } from "./data.js";
+import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
 
 const tweetInput = document.getElementById('tweet-input')
@@ -36,7 +37,20 @@ function handleReplyClick(replyId){
 }
 
 function handleTweetBtnClick(){
-    console.log(tweetInput.value)
+    const newTweetObj = {
+        tweetText: tweetInput.value,
+        uuid: uuidv4(),
+        handle: '@Scrimba',
+        profilePic: `images/scrimbalogo.png`,
+        likes: 0,
+        retweets: 0,
+        replies: [],
+        isLiked: false,
+        isRetweeted: false,
+    }
+
+    tweetsData.unshift(newTweetObj)
+    render(true)
 }
 
 function getFeedHtml(firstRender = false){
