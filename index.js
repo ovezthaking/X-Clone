@@ -10,12 +10,9 @@ tweetBtn.addEventListener('click', () => {
 })
 
 document.addEventListener('click', (e) => {
-    if(e.target.dataset.like){
-        handleLikeClick(e.target.dataset.like)
-    }
-    if(e.target.dataset.retweet){
-        handleRetweetClick(e.target.dataset.retweet)
-    }
+    if(e.target.dataset.like) handleLikeClick(e.target.dataset.like)
+    if(e.target.dataset.retweet) handleRetweetClick(e.target.dataset.retweet)
+    if(e.target.dataset.reply) handleReplyClick(e.target.dataset.reply)
 })
 
 
@@ -37,7 +34,12 @@ function handleRetweetClick(tweetId){
     render()
 }
 
-function getFeedHtml(){
+function handleReplyClick(replyId){
+    const reply = document.getElementById(`replies-${replyId}`)
+    reply.classList.toggle('hidden')
+}
+
+function getFeedHtml(firstRender = false){
     let feedHtml = ``
 
     tweetsData.forEach(tweet => {
@@ -102,7 +104,7 @@ function getFeedHtml(){
                         </div>   
                     </div>            
                 </div>
-                <div id="replies-${tweet.uuid}">
+                <div class="${firstRender == true ? 'hidden' : ''}" id="replies-${tweet.uuid}">
                     ${repliesHtml}
                 </div>   
             </div>
@@ -112,8 +114,8 @@ function getFeedHtml(){
     return feedHtml
 }
 
-function render(){
-    document.getElementById('feed').innerHTML = getFeedHtml()
+function render(firstRender = false){
+    document.getElementById('feed').innerHTML = getFeedHtml(firstRender)
 }
 
-render()
+render(true)
